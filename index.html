@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Itinerario Japón & Taiwán 2027</title>
+  <!-- Tailwind CSS (Google gstatic allowlisted CDN) -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    /* Custom scrollbars & smooth transitions */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
+    ::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.5); }
+    .japan-gradient {
+      background: linear-gradient(135deg, #1e1e24 0%, #2b1021 50%, #1e1e24 100%);
+    }
+    .badge-torii {
+      background-color: #ef4444;
+      color: white;
+    }
+    .card-hover {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+    [x-cloak] { display: none !important; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans selection:bg-rose-500 selection:text-white">
+
+  <!-- TOP HEADER / BANNER -->
+  <header class="japan-gradient text-white border-b border-rose-900/40 sticky top-0 z-40 shadow-lg backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center justify-center p-1.5 bg-rose-600 rounded-lg text-white shadow-md">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M6 6v14M18 6v14M4 10h16M2 4h20" />
+              </svg>
+            </span>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2">
+              Gran Viaje: Taiwán & Japón 2027
+              <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">43 Días</span>
+            </h1>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-300 mt-1 flex flex-wrap items-center gap-2">
+            <span>📅 25 Julio – 05 Septiembre 2027</span>
+            <span class="text-slate-500">•</span>
+            <span class="text-rose-400 font-medium">MAD ➔ TSA ➔ OKA ➔ FUK ➔ ... ➔ HND ➔ MAD</span>
+          </p>
+        </div>
+
+        <!-- Quick Summary Header Badges -->
+        <div class="flex items-center gap-3">
+          <div class="bg-white/10 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-xl text-right">
+            <span class="text-[11px] text-slate-300 uppercase tracking-wider block font-medium">Presupuesto Vuelos</span>
+            <span class="text-lg font-bold text-amber-300" id="header-flight-total">1.100 €</span>
+          </div>
+          <div class="bg-rose-600/90 hover:bg-rose-600 px-3 py-1.5 rounded-xl text-right shadow-md border border-rose-400/30">
+            <span class="text-[11px] text-rose-100 uppercase tracking-wider block font-medium">Gasto Total Acumulado</span>
+            <span class="text-lg font-extrabold text-white" id="header-grand-total">1.100 €</span>
+          </div>
+          <button onclick="openAddItemModal()" class="hidden sm:inline-flex items-center gap-1.5 bg-white text-slate-900 font-semibold px-3.5 py-2 rounded-xl text-xs hover:bg-rose-50 transition shadow">
+            <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            Añadir Elemento
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-2 mt-4 pt-3 border-t border-white/10 overflow-x-auto text-sm font-medium no-scrollbar">
+        <button onclick="switchTab('flights')" id="tab-btn-flights" class="tab-btn active px-3.5 py-1.5 rounded-lg text-white bg-white/20 transition flex items-center gap-2">
+          <span>✈️ Vuelos Confirmados</span>
+          <span class="bg-rose-600 text-white text-xs px-1.5 py-0.2 rounded-full font-bold">4</span>
+        </button>
+        <button onclick="switchTab('calendar')" id="tab-btn-calendar" class="tab-btn px-3.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-2">
+          <span>📅 Calendario Interactivo</span>
+        </button>
+        <button onclick="switchTab('itinerary')" id="tab-btn-itinerary" class="tab-btn px-3.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-2">
+          <span>🗺️ Itinerario & Actividades</span>
+        </button>
+        <button onclick="switchTab('transport')" id="tab-btn-transport" class="tab-btn px-3.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-2">
+          <span>🚅 Transporte (Trenes & Coches)</span>
+        </button>
+        <button onclick="switchTab('hotels')" id="tab-btn-hotels" class="tab-btn px-3.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-2">
+          <span>🏨 Hoteles & Alojamientos</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER: 2-COLUMN (Content + Sticky Budget Sidebar) -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- LEFT/CENTER CONTENT AREA (8 cols on lg) -->
+      <div class="lg:col-span-8 space-y-6">
+
+        <!-- ================= TAB 1: VUELOS ================= -->
+        <section id="view-flights" class="tab-view space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                <span>Vuelos Registrados por Orden Cronológico</span>
+              </h2>
+              <p class="text-sm text-slate-500">Haz clic en cualquier tarjeta de vuelo para desplegar todos los tramos, escalas y avisos importantes.</p>
+            </div>
+            <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-1 rounded-full border border-emerald-200">
+              4 Vuelos Comprados
+            </span>
+          </div>
+
+          <!-- FLIGHT LIST -->
+          <div class="space-y-4" id="flights-container">
+            <!-- Flight Cards injected via JS -->
+          </div>
+        </section>
+
+        <!-- ================= TAB 2: CALENDARIO ================= -->
+        <section id="view-calendar" class="tab-view hidden space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Calendario del Viaje (Jul – Sep 2027)</h2>
+              <p class="text-sm text-slate-500">Visualiza los 43 días de aventura. Los días con vuelos y eventos están señalizados.</p>
+            </div>
+            <!-- Month Selector Buttons -->
+            <div class="inline-flex rounded-lg border border-slate-200 bg-white p-1 shadow-sm text-xs font-semibold">
+              <button onclick="setCalendarMonth(6)" id="cal-m-6" class="cal-month-btn px-3 py-1.5 rounded-md hover:text-slate-900 text-slate-600 transition">Jul 2027</button>
+              <button onclick="setCalendarMonth(7)" id="cal-m-7" class="cal-month-btn active px-3 py-1.5 rounded-md bg-rose-600 text-white transition">Ago 2027</button>
+              <button onclick="setCalendarMonth(8)" id="cal-m-8" class="cal-month-btn px-3 py-1.5 rounded-md hover:text-slate-900 text-slate-600 transition">Sep 2027</button>
+            </div>
+          </div>
+
+          <!-- Calendar Card -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-bold text-slate-800" id="calendar-month-title">Agosto 2027</h3>
+              <div class="flex items-center gap-3 text-xs text-slate-500">
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Día de vuelo</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Actividad / Alojamiento</span>
+              </div>
+            </div>
+
+            <!-- Calendar Days Grid -->
+            <div class="grid grid-cols-7 gap-1 sm:gap-2 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+            </div>
+            <div id="calendar-grid" class="grid grid-cols-7 gap-1 sm:gap-2">
+              <!-- Calendar cells rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Selected Day Event Inspector -->
+          <div id="calendar-day-details" class="bg-indigo-50/70 border border-indigo-100 rounded-xl p-4 text-sm text-slate-700">
+            <div class="font-semibold text-indigo-900 flex items-center justify-between">
+              <span id="selected-day-label">Selecciona un día en el calendario para ver detalles</span>
+              <button onclick="addCustomItemForSelectedDay()" class="text-xs bg-indigo-600 text-white px-2.5 py-1 rounded-md hover:bg-indigo-700 transition">
+                + Añadir a este día
+              </button>
+            </div>
+            <div id="selected-day-content" class="mt-2 text-slate-600">
+              Haz clic en cualquier día marcado para ver los vuelos o actividades programadas.
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAB 3: ITINERARIO & ACTIVIDADES ================= -->
+        <section id="view-itinerary" class="tab-view hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Actividades & Plan por Días</h2>
+              <p class="text-sm text-slate-500">Huecos organizados por etapas para rellenar lo que haréis en cada ciudad.</p>
+            </div>
+            <button onclick="openAddItemModal('activity')" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Nueva Actividad
+            </button>
+          </div>
+
+          <div id="itinerary-stages-container" class="space-y-4">
+            <!-- Stage Accordions generated dynamically -->
+          </div>
+        </section>
+
+        <!-- ================= TAB 4: TRANSPORTE ================= -->
+        <section id="view-transport" class="tab-view hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Transporte (Vuelos, Coches, Trenes Bala)</h2>
+              <p class="text-sm text-slate-500">Controla cada traslado del viaje: tus 4 vuelos principales, Shinkansen y coches de alquiler.</p>
+            </div>
+            <button onclick="openAddItemModal('transport')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Añadir Transporte
+            </button>
+          </div>
+
+          <!-- Transport Categories -->
+          <div class="space-y-4">
+            <!-- Vuelos Summary Drawer -->
+            <div class="bg-white rounded-xl border border-slate-200/90 shadow-sm overflow-hidden">
+              <div class="p-4 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between cursor-pointer" onclick="toggleAccordion('transport-flights-box')">
+                <div class="flex items-center gap-3">
+                  <span class="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-base">✈️</span>
+                  <div>
+                    <h3 class="font-bold text-slate-800 text-sm">Vuelos Principales (Confirmados)</h3>
+                    <p class="text-xs text-slate-500">4 vuelos entre España, Taiwán, Okinawa, Fukuoka y Tokio</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-bold text-slate-900">1.100 €</span>
+                  <svg id="arrow-transport-flights-box" class="w-5 h-5 text-slate-400 transition transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <div id="transport-flights-box" class="p-4 space-y-2 text-xs text-slate-600">
+                <div class="flex justify-between py-1 border-b border-slate-100">
+                  <span>1. Madrid (MAD) ➔ Taipéi (TSA) [Sichuan Airlines]</span>
+                  <span class="font-semibold text-slate-800">430 €</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-100">
+                  <span>2. Taipéi (TPE) ➔ Okinawa (OKA) [Thai VietJet Air]</span>
+                  <span class="font-semibold text-slate-800">70 €</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-100">
+                  <span>3. Okinawa (OKA) ➔ Fukuoka (FUK) [ANA Wings]</span>
+                  <span class="font-semibold text-slate-800">70 €</span>
+                </div>
+                <div class="flex justify-between py-1">
+                  <span>4. Tokio (HND) ➔ Madrid (MAD) [Air China]</span>
+                  <span class="font-semibold text-slate-800">530 €</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Shinkansen & Trenes Bala -->
+            <div class="bg-white rounded-xl border border-slate-200/90 shadow-sm overflow-hidden">
+              <div class="p-4 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between cursor-pointer" onclick="toggleAccordion('transport-trains-box')">
+                <div class="flex items-center gap-3">
+                  <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-base">🚅</span>
+                  <div>
+                    <h3 class="font-bold text-slate-800 text-sm">Trenes Bala (Shinkansen) & Pases JR</h3>
+                    <p class="text-xs text-slate-500">Trayectos terrestres en Japón (Fukuoka ➔ Kioto/Osaka ➔ Tokio)</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-bold text-slate-900" id="total-trains-cost">0 €</span>
+                  <svg id="arrow-transport-trains-box" class="w-5 h-5 text-slate-400 transition transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <div id="transport-trains-box" class="p-4">
+                <div id="trains-items-list" class="space-y-2 text-xs">
+                  <!-- Injected via JS -->
+                </div>
+                <button onclick="openAddItemModal('transport', 'Tren Bala')" class="mt-3 text-xs text-emerald-600 font-semibold hover:text-emerald-800 flex items-center gap-1">
+                  + Añadir billete de Shinkansen o Pase
+                </button>
+              </div>
+            </div>
+
+            <!-- Coches de Alquiler -->
+            <div class="bg-white rounded-xl border border-slate-200/90 shadow-sm overflow-hidden">
+              <div class="p-4 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between cursor-pointer" onclick="toggleAccordion('transport-cars-box')">
+                <div class="flex items-center gap-3">
+                  <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-base">🚗</span>
+                  <div>
+                    <h3 class="font-bold text-slate-800 text-sm">Alquiler de Coches</h3>
+                    <p class="text-xs text-slate-500">Altamente recomendado para Okinawa y excursiones rurales (Fuji, Kyushu)</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-bold text-slate-900" id="total-cars-cost">0 €</span>
+                  <svg id="arrow-transport-cars-box" class="w-5 h-5 text-slate-400 transition transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <div id="transport-cars-box" class="p-4">
+                <div id="cars-items-list" class="space-y-2 text-xs">
+                  <!-- Injected via JS -->
+                </div>
+                <button onclick="openAddItemModal('transport', 'Coche')" class="mt-3 text-xs text-amber-600 font-semibold hover:text-amber-800 flex items-center gap-1">
+                  + Añadir alquiler de coche
+                </button>
+              </div>
+            </div>
+
+            <!-- Metro, Ferries y Tarjetas Suica/Pasmo -->
+            <div class="bg-white rounded-xl border border-slate-200/90 shadow-sm overflow-hidden">
+              <div class="p-4 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between cursor-pointer" onclick="toggleAccordion('transport-local-box')">
+                <div class="flex items-center gap-3">
+                  <span class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-base">💳</span>
+                  <div>
+                    <h3 class="font-bold text-slate-800 text-sm">Transporte Local, Tarjetas IC & Ferries</h3>
+                    <p class="text-xs text-slate-500">Recargas de Suica / Pasmo / ICOCA, Metro de Taipéi y ferries en islas</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-bold text-slate-900" id="total-local-cost">0 €</span>
+                  <svg id="arrow-transport-local-box" class="w-5 h-5 text-slate-400 transition transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <div id="transport-local-box" class="p-4">
+                <div id="local-items-list" class="space-y-2 text-xs">
+                  <!-- Injected via JS -->
+                </div>
+                <button onclick="openAddItemModal('transport', 'Transporte Local')" class="mt-3 text-xs text-purple-600 font-semibold hover:text-purple-800 flex items-center gap-1">
+                  + Añadir gasto de transporte local
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAB 5: HOTELES ================= -->
+        <section id="view-hotels" class="tab-view hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-slate-900">Hoteles & Alojamientos</h2>
+              <p class="text-sm text-slate-500">Desglose de alojamientos por base. Añade los hoteles según vayas decidiendo las estancias.</p>
+            </div>
+            <button onclick="openAddItemModal('hotel')" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Añadir Hotel
+            </button>
+          </div>
+
+          <div id="hotels-container" class="space-y-4">
+            <!-- Injected via JS -->
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ================= RIGHT COLUMN: SIDEBAR DE PRESUPUESTO & CONTROL ================= -->
+      <aside class="lg:col-span-4 space-y-6 sticky top-24">
+        
+        <!-- Total Trip Budget Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden card-hover">
+          <div class="japan-gradient text-white p-5">
+            <span class="text-xs uppercase tracking-wider text-rose-300 font-semibold block">Presupuesto del Viaje</span>
+            <div class="flex items-baseline justify-between mt-1">
+              <h3 class="text-3xl font-extrabold" id="sidebar-grand-total">1.100 €</h3>
+              <span class="text-xs text-slate-300 bg-white/10 px-2 py-0.5 rounded-full">Total Acumulado</span>
+            </div>
+            <p class="text-xs text-slate-300 mt-2 flex items-center gap-1">
+              <span>Media estimada:</span>
+              <span class="font-bold text-amber-300" id="sidebar-per-day-cost">~25,58 € / día</span>
+              <span class="text-[11px] text-slate-400">(43 días)</span>
+            </p>
+          </div>
+
+          <!-- Breakdown by category -->
+          <div class="p-5 space-y-4 text-xs">
+            
+            <!-- Category 1: Vuelos -->
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-slate-700 flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Vuelos (4 confirmados)
+                </span>
+                <span class="font-bold text-slate-900" id="sidebar-flights-cost">1.100 €</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div class="bg-sky-500 h-2 rounded-full" id="bar-flights" style="width: 100%"></div>
+              </div>
+            </div>
+
+            <!-- Category 2: Hoteles -->
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-slate-700 flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Hoteles & Ryokans
+                </span>
+                <span class="font-bold text-slate-900" id="sidebar-hotels-cost">0 €</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div class="bg-rose-500 h-2 rounded-full" id="bar-hotels" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <!-- Category 3: Transporte terrestre -->
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-slate-700 flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Trenes Bala & Coches
+                </span>
+                <span class="font-bold text-slate-900" id="sidebar-transport-cost">0 €</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div class="bg-emerald-500 h-2 rounded-full" id="bar-transport" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <!-- Category 4: Actividades & Entradas -->
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-slate-700 flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Actividades & Ocio
+                </span>
+                <span class="font-bold text-slate-900" id="sidebar-activities-cost">0 €</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div class="bg-amber-500 h-2 rounded-full" id="bar-activities" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="pt-4 border-t border-slate-100 space-y-2">
+              <button onclick="openAddItemModal()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-3 rounded-xl transition text-center shadow-sm flex items-center justify-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Añadir Nuevo Gasto / Entrada
+              </button>
+              
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="exportDataJSON()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-1.5 px-2 rounded-lg transition text-center flex items-center justify-center gap-1">
+                  <span>💾 Exportar</span>
+                </button>
+                <label class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-1.5 px-2 rounded-lg transition text-center cursor-pointer flex items-center justify-center gap-1">
+                  <span>📥 Importar</span>
+                  <input type="file" id="import-file" class="hidden" accept=".json" onchange="importDataJSON(event)">
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Currency Converter Quick Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm text-xs space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-slate-800 flex items-center gap-1.5">
+              <span>💱 Conversor de Divisas</span>
+            </h4>
+            <span class="text-[10px] text-slate-400">Tipo aprox.</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[10px] text-slate-500 mb-0.5">Euros (€)</label>
+              <input type="number" id="calc-eur" value="10" oninput="convertCurrency('eur')" class="w-full border border-slate-200 rounded-lg px-2 py-1 text-slate-800 font-semibold focus:outline-none focus:ring-1 focus:ring-rose-500">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-500 mb-0.5">Yenes (¥)</label>
+              <input type="number" id="calc-jpy" value="1650" oninput="convertCurrency('jpy')" class="w-full border border-slate-200 rounded-lg px-2 py-1 text-slate-800 font-semibold focus:outline-none focus:ring-1 focus:ring-rose-500">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-500 mb-0.5">Dólar Taiwán (NT$)</label>
+              <input type="number" id="calc-twd" value="350" oninput="convertCurrency('twd')" class="w-full border border-slate-200 rounded-lg px-2 py-1 text-slate-800 font-semibold focus:outline-none focus:ring-1 focus:ring-rose-500">
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-500 italic">1 € ≈ 165 ¥ (JPY) | 1 € ≈ 35 NT$ (TWD)</p>
+        </div>
+
+        <!-- Quick Travel Alert Box -->
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-xs text-amber-900 space-y-2">
+          <div class="flex items-center gap-2 font-bold text-amber-800">
+            <span class="text-base">⚠️</span>
+            <span>Aviso Clave en Chengdu (26 Jul)</span>
+          </div>
+          <p class="text-amber-800/90 leading-relaxed">
+            Tu vuelo de ida tiene escala de <strong>8h 55min</strong> con <strong>cambio obligatorio de aeropuerto</strong>: llegas a <strong>Tianfu (TFU)</strong> a las 05:00 y sales hacia Taipéi desde <strong>Shuangliu (CTU)</strong> a las 13:55. Hay metro directo (Línea 18 / 19) y autobús lanzadera entre ambos aeropuertos (~60-80 min de trayecto).
+          </p>
+        </div>
+
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- ================= MODAL: AÑADIR ELEMENTO (ACTIVIDAD, HOTEL, TRANSPORTE) ================= -->
+  <div id="add-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2" id="modal-title">
+          <span>Añadir Nuevo Elemento al Itinerario</span>
+        </h3>
+        <button onclick="closeAddItemModal()" class="text-slate-400 hover:text-slate-600 rounded-lg p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="add-item-form" onsubmit="handleAddItemSubmit(event)" class="p-5 space-y-4 text-xs sm:text-sm">
+        <!-- Type Selection -->
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Categoría</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="flex items-center justify-center gap-1.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 transition text-xs font-semibold">
+              <input type="radio" name="itemCategory" value="activity" checked onchange="updateModalFormFields()">
+              <span>🎯 Actividad</span>
+            </label>
+            <label class="flex items-center justify-center gap-1.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 transition text-xs font-semibold">
+              <input type="radio" name="itemCategory" value="hotel" onchange="updateModalFormFields()">
+              <span>🏨 Hotel</span>
+            </label>
+            <label class="flex items-center justify-center gap-1.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 transition text-xs font-semibold">
+              <input type="radio" name="itemCategory" value="transport" onchange="updateModalFormFields()">
+              <span>🚅 Transporte</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1" id="label-title">Nombre o Título</label>
+          <input type="text" id="modal-item-title" required placeholder="Ej. Subir a Taipei 101 / Shinkansen Hakata a Kioto / Hotel Granvia" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500">
+        </div>
+
+        <!-- Stage / City and Date -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Ciudad / Región</label>
+            <select id="modal-item-stage" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white">
+              <option value="taipei">Taipéi / Taiwán (26 Jul - 2 Ago)</option>
+              <option value="okinawa">Okinawa (2 Ago - 5 Ago)</option>
+              <option value="fukuoka">Fukuoka / Kyushu (5 Ago - ?)</option>
+              <option value="kansai">Kansai (Kioto, Osaka, Nara)</option>
+              <option value="chugoku">Hiroshima & Miyajima</option>
+              <option value="alps">Alpes Japoneses / Takayama</option>
+              <option value="tokyo">Tokio & Alrededores (? - 5 Sep)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Fecha</label>
+            <input type="date" id="modal-item-date" min="2027-07-25" max="2027-09-06" value="2027-08-06" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500">
+          </div>
+        </div>
+
+        <!-- Price -->
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Precio Total Estimado (€)</label>
+          <div class="relative">
+            <span class="absolute left-3 top-2 text-slate-400 font-bold">€</span>
+            <input type="number" step="any" min="0" id="modal-item-price" placeholder="0" class="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500">
+          </div>
+          <span class="text-[11px] text-slate-400 mt-0.5 block">Se sumará automáticamente al presupuesto lateral.</span>
+        </div>
+
+        <!-- Notes / Details -->
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Notas, enlaces o detalles</label>
+          <textarea id="modal-item-notes" rows="2" placeholder="Reserva requerida, enlace de web, horarios, paradas..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500"></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeAddItemModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold transition">
+            Cancelar
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold transition shadow-md">
+            Guardar Elemento
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC & DATA ENGINE -->
+  <script>
+    // ================= DATA STRUCTURE =================
+    const FLIGHTS_DATA = [
+      {
+        id: "flight-1",
+        number: "1",
+        title: "Madrid (MAD) a Taipéi (TSA)",
+        routeShort: "MAD ➔ TSA",
+        price: 430,
+        airline: "Sichuan Airlines",
+        departureDateStr: "Domingo, 25 de julio de 2027",
+        arrivalDateStr: "Lunes, 26 de julio de 2027",
+        isoDeparture: "2027-07-25",
+        isoArrival: "2027-07-26",
+        durationTotal: "24 h 15 min",
+        type: "Con escala y cambio de aeropuerto",
+        badgeColor: "bg-rose-100 text-rose-800 border-rose-200",
+        segments: [
+          {
+            legTitle: "1.er Tramo (Vuelo 3U3804)",
+            departureTime: "11:05",
+            departurePlace: "Madrid-Barajas (MAD)",
+            arrivalTime: "05:00 (+1 día)",
+            arrivalPlace: "Chengdu-Tianfu (TFU)",
+            duration: "11 h 55 min",
+            airline: "Sichuan Airlines"
+          },
+          {
+            isLayover: true,
+            duration: "8 h 55 min",
+            alertText: "Atención: Requiere cambio de aeropuerto en Chengdu, desde el Aeropuerto Internacional de Chengdu-Tianfu (TFU) hasta el Aeropuerto Internacional de Chengdu Shuangliu (CTU)."
+          },
+          {
+            legTitle: "2.º Tramo (Vuelo 3U8391)",
+            departureTime: "13:55",
+            departurePlace: "Chengdu Shuangliu (CTU)",
+            arrivalTime: "17:20",
+            arrivalPlace: "Taipéi Sung Shan (TSA)",
+            duration: "3 h 25 min",
+            airline: "Sichuan Airlines"
+          }
+        ]
+      },
+      {
+        id: "flight-2",
+        number: "2",
+        title: "Taipéi (TPE) a Okinawa (OKA)",
+        routeShort: "TPE ➔ OKA",
+        price: 70,
+        airline: "Thai VietJet Air",
+        flightCode: "VZ568",
+        departureDateStr: "Lunes, 2 de agosto de 2027",
+        arrivalDateStr: "Lunes, 2 de agosto de 2027",
+        isoDeparture: "2027-08-02",
+        isoArrival: "2027-08-02",
+        durationTotal: "1 h 25 min",
+        type: "Vuelo Directo",
+        badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
+        segments: [
+          {
+            legTitle: "Vuelo Directo (VZ568)",
+            departureTime: "14:55",
+            departurePlace: "Taipei Taiwán Taoyuan (TPE)",
+            arrivalTime: "17:20",
+            arrivalPlace: "Okinawa Naha (OKA)",
+            duration: "1 h 25 min",
+            airline: "Thai VietJet Air"
+          }
+        ]
+      },
+      {
+        id: "flight-3",
+        number: "3",
+        title: "Okinawa (OKA) a Fukuoka (FUK)",
+        routeShort: "OKA ➔ FUK",
+        price: 70,
+        airline: "ANA (All Nippon Airways) — Operado por ANA Wings",
+        flightCode: "NH1206",
+        departureDateStr: "Jueves, 5 de agosto de 2027",
+        arrivalDateStr: "Jueves, 5 de agosto de 2027",
+        isoDeparture: "2027-08-05",
+        isoArrival: "2027-08-05",
+        durationTotal: "1 h 40 min",
+        type: "Vuelo Directo",
+        badgeColor: "bg-sky-100 text-sky-800 border-sky-200",
+        segments: [
+          {
+            legTitle: "Vuelo Directo (NH1206)",
+            departureTime: "11:50",
+            departurePlace: "Okinawa Naha (OKA)",
+            arrivalTime: "13:30",
+            arrivalPlace: "Fukuoka (FUK)",
+            duration: "1 h 40 min",
+            airline: "ANA / ANA Wings"
+          }
+        ]
+      },
+      {
+        id: "flight-4",
+        number: "4",
+        title: "Tokio (HND) a Madrid (MAD)",
+        routeShort: "HND ➔ MAD",
+        price: 530,
+        airline: "Air China",
+        departureDateStr: "Domingo, 5 de septiembre de 2027",
+        arrivalDateStr: "Domingo, 5 de septiembre de 2027",
+        isoDeparture: "2027-09-05",
+        isoArrival: "2027-09-05",
+        durationTotal: "19 h 30 min",
+        type: "Con escala en Pekín (mismo aeropuerto)",
+        badgeColor: "bg-purple-100 text-purple-800 border-purple-200",
+        segments: [
+          {
+            legTitle: "1.er Tramo (Vuelo CA184)",
+            departureTime: "08:30",
+            departurePlace: "Tokio Haneda (HND)",
+            arrivalTime: "11:20",
+            arrivalPlace: "Pekín Capital (PEK)",
+            duration: "3 h 50 min",
+            airline: "Air China"
+          },
+          {
+            isLayover: true,
+            duration: "3 h 40 min",
+            alertText: "Escala en el mismo aeropuerto: Pekín Capital (PEK). Conexión estándar internacional sin cambio de aeropuerto."
+          },
+          {
+            legTitle: "2.º Tramo (Vuelo CA897)",
+            departureTime: "15:00",
+            departurePlace: "Pekín Capital (PEK)",
+            arrivalTime: "21:00",
+            arrivalPlace: "Madrid-Barajas (MAD)",
+            duration: "12 h 00 min",
+            airline: "Air China"
+          }
+        ]
+      }
+    ];
+
+    // Initial Stage Template for Itinerary
+    const DEFAULT_STAGES = [
+      {
+        id: "taipei",
+        name: "Etapa 1: Taipéi & Norte de Taiwán",
+        dates: "26 Julio – 02 Agosto 2027 (7 Noches)",
+        icon: "🏮",
+        description: "Mercados nocturnos, templos tradicionales, Taipei 101, excursión a Jiufen & Shifen y gastronomía taiwanesa.",
+        defaultSuggestions: [
+          { title: "Llegada al aeropuerto Songshan (TSA) y check-in", date: "2027-07-26", price: 0, notes: "Llegada a las 17:20. Songshan está dentro de la ciudad, metro directo." },
+          { title: "Rascacielos Taipei 101 y Mercado Nocturno Raohe / Shilin", date: "2027-07-27", price: 20, notes: "Subida al observatorio al atardecer y cena callejera." },
+          { title: "Excursión de un día a Jiufen & Linternas en Shifen", date: "2027-07-29", price: 25, notes: "Pueblo costero que inspiró 'El Viaje de Chihiro'." }
+        ]
+      },
+      {
+        id: "okinawa",
+        name: "Etapa 2: Islas Okinawa (Naha, Playas & Buceo)",
+        dates: "02 Agosto – 05 Agosto 2027 (3 Noches)",
+        icon: "🏝️",
+        description: "El archipiélago subtropical de Japón: aguas turquesas, historia Ryukyu, Kokusai Dori y el increíble Acuario Churaumi.",
+        defaultSuggestions: [
+          { title: "Aterrizaje en Naha (OKA) & Recogida Coche / Paseo Kokusai Dori", date: "2027-08-02", price: 0, notes: "Llegada a las 17:20 desde Taipéi." },
+          { title: "Playas del Norte y Acuario Okinawa Churaumi", date: "2027-08-03", price: 15, notes: "Uno de los acuarios con tiburones ballena más espectaculares del mundo." },
+          { title: "Snorkel en islas Kerama o Cabo Manzamo", date: "2027-08-04", price: 40, notes: "Aguas cristalinas y corales." }
+        ]
+      },
+      {
+        id: "fukuoka",
+        name: "Etapa 3: Kyushu (Fukuoka, Hakata & alrededores)",
+        dates: "05 Agosto – Aprox. 09 Agosto 2027",
+        icon: "🍜",
+        description: "La cuna del ramen Tonkotsu, los puestos callejeros 'Yatai' al borde del río, Dazaifu y aguas termales Onsen en Beppu.",
+        defaultSuggestions: [
+          { title: "Llegada al aeropuerto de Fukuoka (13:30) y cena en Yatais de Nakasu", date: "2027-08-05", price: 25, notes: "Probar el auténtico ramen Hakata." },
+          { title: "Visita al Santuario Dazaifu Tenmangu", date: "2027-08-06", price: 10, notes: "Tren local desde Tenjin, arquitectura y jardines." }
+        ]
+      },
+      {
+        id: "kansai",
+        name: "Etapa 4: Kansai & Chugoku (Hiroshima, Kioto, Osaka, Nara)",
+        dates: "Aprox. 09 Agosto – 22 Agosto 2027",
+        icon: "⛩️",
+        description: "El corazón cultural e histórico: los mil toriis de Fushimi Inari, ciervos de Nara, templos de Kioto y luces de Dotonbori.",
+        defaultSuggestions: [
+          { title: "Parada en Hiroshima & Isla de Miyajima (Torii Flotante)", date: "2027-08-10", price: 30, notes: "Parque de la Paz y teleférico al Monte Misen." },
+          { title: "Kioto: Fushimi Inari Taisha al amanecer & Bosque de Bambú de Arashiyama", date: "2027-08-12", price: 10, notes: "Evitar multitudes yendo temprano." },
+          { title: "Osaka: Dotonbori, Castillo de Osaka y comida callejera", date: "2027-08-15", price: 30, notes: "Okonomiyaki y Takoyaki imprescindibles." }
+        ]
+      },
+      {
+        id: "tokyo",
+        name: "Etapa 5: Tokio & Kanto (Metrópolis & Despedida)",
+        dates: "Aprox. 22 Agosto – 05 Septiembre 2027",
+        icon: "🗼",
+        description: "Shibuya, Shinjuku, Akihabara, Asakusa, excursión al Monte Fuji / Hakone o Nikko, hasta el vuelo de regreso el 5 Sep.",
+        defaultSuggestions: [
+          { title: "Shibuya Sky, Cruce de Shibuya y Meiji Jingu en Harajuku", date: "2027-08-25", price: 18, notes: "Mirador 360 con vistas del monte Fuji si está despejado." },
+          { title: "Excursión al Monte Fuji (Lago Kawaguchiko / Pagoda Chureito)", date: "2027-08-28", price: 35, notes: "Vistas icónicas del volcán sagrado." },
+          { title: "Vuelo de regreso Tokio Haneda (HND) a Madrid (MAD)", date: "2027-09-05", price: 0, notes: "Salida a las 08:30 h con Air China." }
+        ]
+      }
+    ];
+
+    // Local Storage State Key
+    const STORAGE_KEY = "viaje_japon_taiwan_2027_v1";
+
+    let appState = {
+      activities: [],
+      hotels: [
+        {
+          id: "hotel-tpe",
+          title: "Alojamiento en Taipéi (7 noches)",
+          stage: "taipei",
+          checkIn: "2027-07-26",
+          checkOut: "2027-08-02",
+          nights: 7,
+          price: 0,
+          status: "Pendiente por definir",
+          notes: "Zona recomendada: Ximending o cerca de la estación central de Taipéi (Taipei Main Station)"
+        },
+        {
+          id: "hotel-oka",
+          title: "Alojamiento en Okinawa (3 noches)",
+          stage: "okinawa",
+          checkIn: "2027-08-02",
+          checkOut: "2027-08-05",
+          nights: 3,
+          price: 0,
+          status: "Pendiente por definir",
+          notes: "Zona recomendada: Naha (para moverte fácil) o Resort frente a la playa en Onna / Nago"
+        },
+        {
+          id: "hotel-fuk",
+          title: "Alojamiento en Fukuoka (Kyushu)",
+          stage: "fukuoka",
+          checkIn: "2027-08-05",
+          checkOut: "2027-08-09",
+          nights: 4,
+          price: 0,
+          status: "Pendiente por definir",
+          notes: "Zona recomendada: Hakata o Tenjin"
+        },
+        {
+          id: "hotel-tyo",
+          title: "Alojamiento en Tokio",
+          stage: "tokyo",
+          checkIn: "2027-08-26",
+          checkOut: "2027-09-05",
+          nights: 10,
+          price: 0,
+          status: "Pendiente por definir",
+          notes: "Zona recomendada: Shinjuku, Asakusa, Ueno o Shibuya"
+        }
+      ],
+      transportItems: [
+        {
+          id: "tr-shinkansen-example",
+          title: "Shinkansen Fukuoka (Hakata) ➔ Kioto / Osaka",
+          type: "Tren Bala",
+          date: "2027-08-09",
+          price: 100,
+          notes: "Shinkansen Sanyo Nozomi o Mizuho (~2h 45m). Billetes con reserva de asientos."
+        },
+        {
+          id: "tr-car-okinawa",
+          title: "Coche de alquiler en Okinawa (3 días)",
+          type: "Coche",
+          date: "2027-08-02",
+          price: 150,
+          notes: "Imprescindible permiso internacional de conducir (Ginebra 1949)."
+        }
+      ],
+      currentCalendarMonth: 7 // August (0-indexed: 6=Jul, 7=Aug, 8=Sep)
+    };
+
+    // Load from LocalStorage if available
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && Array.isArray(parsed.activities)) {
+            appState = { ...appState, ...parsed };
+          }
+        } else {
+          DEFAULT_STAGES.forEach(st => {
+            st.defaultSuggestions.forEach((sug, idx) => {
+              appState.activities.push({
+                id: `act-${st.id}-${idx}`,
+                title: sug.title,
+                stage: st.id,
+                date: sug.date,
+                price: sug.price,
+                notes: sug.notes
+              });
+            });
+          });
+          saveState();
+        }
+      } catch (e) {
+        console.error("Error loading state", e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        updateAllCalculations();
+      } catch (e) {
+        console.error("Error saving state", e);
+      }
+    }
+
+    // ================= RENDER FUNCTIONS =================
+
+    function renderFlights() {
+      const container = document.getElementById("flights-container");
+      if (!container) return;
+
+      container.innerHTML = FLIGHTS_DATA.map((flight, idx) => `
+        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden card-hover transition">
+          <div onclick="toggleFlightDetails('${flight.id}')" class="p-4 sm:p-5 cursor-pointer bg-white hover:bg-slate-50/70 transition flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-transparent">
+            
+            <div class="flex items-start sm:items-center gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-extrabold text-base flex-shrink-0 shadow-sm">
+                ${flight.number}
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <h3 class="text-base sm:text-lg font-bold text-slate-900">${flight.title}</h3>
+                  <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold border ${flight.badgeColor}">
+                    ${flight.airline}
+                  </span>
+                </div>
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 mt-1">
+                  <span class="flex items-center gap-1 font-medium text-slate-700">
+                    📅 ${flight.departureDateStr}
+                  </span>
+                  <span>•</span>
+                  <span>⏱️ Duración: <strong class="text-slate-700">${flight.durationTotal}</strong></span>
+                  <span>•</span>
+                  <span class="text-indigo-600 font-semibold">${flight.type}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between md:justify-end gap-4 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+              <div class="text-left md:text-right">
+                <span class="text-[11px] text-slate-400 block uppercase font-medium">Precio del vuelo</span>
+                <span class="text-xl sm:text-2xl font-black text-rose-600">${flight.price} €</span>
+              </div>
+              <button class="w-9 h-9 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-rose-50 hover:text-rose-600 transition" title="Ver detalles y escalas">
+                <svg id="arrow-${flight.id}" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+            </div>
+
+          </div>
+
+          <div id="details-${flight.id}" class="hidden bg-slate-50/80 p-5 border-t border-slate-200 space-y-4 text-xs sm:text-sm animate-in slide-in-from-top-1">
+            <h4 class="font-bold text-slate-800 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+              <span>✈️ Desglose completo del itinerario aéreo</span>
+            </h4>
+
+            <div class="space-y-3">
+              ${flight.segments.map(seg => {
+                if (seg.isLayover) {
+                  return `
+                    <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 flex items-start gap-3">
+                      <span class="text-lg">⏳</span>
+                      <div class="space-y-1">
+                        <div class="font-bold text-amber-900">Transbordo / Escala: ${seg.duration}</div>
+                        <p class="text-amber-800/90 leading-relaxed">${seg.alertText}</p>
+                      </div>
+                    </div>
+                  `;
+                } else {
+                  return `
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2">
+                      <div class="flex items-center justify-between font-bold text-slate-900 text-sm">
+                        <span>${seg.legTitle}</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600">${seg.duration}</span>
+                      </div>
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-600 pt-1">
+                        <div class="flex items-center gap-2">
+                          <span class="w-6 h-6 rounded-md bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center">🛫</span>
+                          <div>
+                            <span class="text-slate-400 block text-[10px]">SALIDA</span>
+                            <span class="font-semibold text-slate-800">${seg.departureTime}</span> — ${seg.departurePlace}
+                          </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <span class="w-6 h-6 rounded-md bg-indigo-50 text-indigo-600 font-bold flex items-center justify-center">🛬</span>
+                          <div>
+                            <span class="text-slate-400 block text-[10px]">LLEGADA</span>
+                            <span class="font-semibold text-slate-800">${seg.arrivalTime}</span> — ${seg.arrivalPlace}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                }
+              }).join("")}
+            </div>
+
+            <div class="pt-2 text-right">
+              <span class="text-[11px] text-slate-500 italic">Aerolínea operadora: ${flight.airline} • Total: ${flight.price} €</span>
+            </div>
+          </div>
+
+        </div>
+      `).join("");
+    }
+
+    function toggleFlightDetails(flightId) {
+      const panel = document.getElementById(`details-${flightId}`);
+      const arrow = document.getElementById(`arrow-${flightId}`);
+      if (!panel) return;
+      
+      const isHidden = panel.classList.contains("hidden");
+      if (isHidden) {
+        panel.classList.remove("hidden");
+        if (arrow) arrow.classList.add("rotate-180");
+      } else {
+        panel.classList.add("hidden");
+        if (arrow) arrow.classList.remove("rotate-180");
+      }
+    }
+
+    function toggleAccordion(id) {
+      const el = document.getElementById(id);
+      const arrow = document.getElementById(`arrow-${id}`);
+      if (!el) return;
+      el.classList.toggle("hidden");
+      if (arrow) arrow.classList.toggle("rotate-180");
+    }
+
+    // ================= CALENDAR ENGINE =================
+    const MONTH_NAMES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+    function setCalendarMonth(monthIndex) {
+      appState.currentCalendarMonth = monthIndex;
+      document.querySelectorAll(".cal-month-btn").forEach(btn => {
+        btn.classList.remove("bg-rose-600", "text-white", "active");
+        btn.classList.add("text-slate-600");
+      });
+      const activeBtn = document.getElementById(`cal-m-${monthIndex}`);
+      if (activeBtn) {
+        activeBtn.classList.add("bg-rose-600", "text-white", "active");
+        activeBtn.classList.remove("text-slate-600");
+      }
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById("calendar-grid");
+      const title = document.getElementById("calendar-month-title");
+      if (!grid || !title) return;
+
+      const year = 2027;
+      const month = appState.currentCalendarMonth;
+      title.innerText = `${MONTH_NAMES[month]} ${year}`;
+
+      grid.innerHTML = "";
+
+      const firstDay = new Date(year, month, 1);
+      let startDayOfWeek = firstDay.getDay();
+      startDayOfWeek = (startDayOfWeek === 0) ? 6 : startDayOfWeek - 1;
+
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      for (let i = 0; i < startDayOfWeek; i++) {
+        const emptyCell = document.createElement("div");
+        emptyCell.className = "h-20 sm:h-24 bg-slate-50/50 rounded-xl border border-dashed border-slate-200/60";
+        grid.appendChild(emptyCell);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        
+        const flightsOnDay = FLIGHTS_DATA.filter(f => f.isoDeparture === dateStr || f.isoArrival === dateStr);
+        const activitiesOnDay = appState.activities.filter(a => a.date === dateStr);
+        const transportOnDay = appState.transportItems.filter(t => t.date === dateStr);
+
+        const hasFlight = flightsOnDay.length > 0;
+        const hasOtherEvents = activitiesOnDay.length > 0 || transportOnDay.length > 0;
+
+        const cell = document.createElement("div");
+        let borderBg = "bg-white border-slate-200/90 hover:border-slate-400";
+        if (hasFlight) {
+          borderBg = "bg-rose-50/60 border-rose-300 ring-1 ring-rose-300/60";
+        } else if (hasOtherEvents) {
+          borderBg = "bg-indigo-50/40 border-indigo-200";
+        }
+
+        cell.className = `h-20 sm:h-24 p-1.5 sm:p-2 rounded-xl border ${borderBg} flex flex-col justify-between cursor-pointer transition shadow-2xs hover:shadow-sm`;
+        cell.onclick = () => showCalendarDayDetails(dateStr, day, month, year, flightsOnDay, activitiesOnDay, transportOnDay);
+
+        let tagsHtml = "";
+        if (hasFlight) {
+          flightsOnDay.forEach(f => {
+            tagsHtml += `
+              <div class="text-[9px] sm:text-[10px] bg-rose-600 text-white rounded px-1 py-0.5 font-bold truncate flex items-center gap-0.5" title="${f.title} (${f.price}€)">
+                <span>✈️</span> <span class="truncate">${f.routeShort}</span>
+              </div>
+            `;
+          });
+        }
+        if (activitiesOnDay.length > 0) {
+          tagsHtml += `
+            <div class="text-[9px] sm:text-[10px] bg-indigo-100 text-indigo-800 rounded px-1 py-0.5 font-medium truncate">
+              🎯 ${activitiesOnDay.length} actividad${activitiesOnDay.length > 1 ? 'es' : ''}
+            </div>
+          `;
+        }
+        if (transportOnDay.length > 0) {
+          tagsHtml += `
+            <div class="text-[9px] sm:text-[10px] bg-emerald-100 text-emerald-800 rounded px-1 py-0.5 font-medium truncate">
+              🚅 ${transportOnDay.length} transporte
+            </div>
+          `;
+        }
+
+        cell.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold ${hasFlight ? 'text-rose-600' : 'text-slate-800'}">${day}</span>
+            ${hasFlight ? '<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>' : ''}
+          </div>
+          <div class="space-y-0.5 overflow-hidden">
+            ${tagsHtml}
+          </div>
+        `;
+
+        grid.appendChild(cell);
+      }
+    }
+
+    let selectedDateInCalendar = "2027-08-02";
+
+    function showCalendarDayDetails(dateStr, day, month, year, flights, activities, transports) {
+      selectedDateInCalendar = dateStr;
+      const label = document.getElementById("selected-day-label");
+      const content = document.getElementById("selected-day-content");
+      if (!label || !content) return;
+
+      label.innerHTML = `Detalles del día: <strong>${day} de ${MONTH_NAMES[month]} de ${year}</strong> (${dateStr})`;
+
+      let html = `<div class="space-y-3 mt-2">`;
+
+      if (flights.length > 0) {
+        html += `<div class="space-y-1.5">`;
+        flights.forEach(f => {
+          html += `
+            <div class="bg-white p-2.5 rounded-lg border border-rose-200 text-xs flex items-center justify-between">
+              <div>
+                <span class="font-bold text-rose-700">✈️ ${f.title}</span>
+                <span class="text-slate-500 block text-[11px]">${f.airline} • Duración: ${f.durationTotal}</span>
+              </div>
+              <span class="font-black text-rose-600 text-sm">${f.price} €</span>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+
+      if (transports.length > 0) {
+        html += `<div class="space-y-1.5">`;
+        transports.forEach(t => {
+          html += `
+            <div class="bg-white p-2.5 rounded-lg border border-emerald-200 text-xs flex items-center justify-between">
+              <div>
+                <span class="font-bold text-emerald-800">🚅 ${t.title} (${t.type})</span>
+                <span class="text-slate-500 block text-[11px]">${t.notes || 'Sin notas'}</span>
+              </div>
+              <span class="font-bold text-slate-800 text-sm">${t.price} €</span>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+
+      if (activities.length > 0) {
+        html += `<div class="space-y-1.5">`;
+        activities.forEach(a => {
+          html += `
+            <div class="bg-white p-2.5 rounded-lg border border-indigo-200 text-xs flex items-center justify-between">
+              <div>
+                <span class="font-bold text-indigo-900">🎯 ${a.title}</span>
+                <span class="text-slate-500 block text-[11px]">${a.notes || ''}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-800">${a.price} €</span>
+                <button onclick="deleteActivity('${a.id}')" class="text-rose-500 hover:text-rose-700 text-xs" title="Eliminar">✕</button>
+              </div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+
+      if (flights.length === 0 && transports.length === 0 && activities.length === 0) {
+        html += `<p class="text-xs text-slate-500 italic">No hay ningún evento registrado aún para este día. ¡Pulsa el botón "+ Añadir a este día" para programar una actividad o transporte!</p>`;
+      }
+
+      html += `</div>`;
+      content.innerHTML = html;
+    }
+
+    function addCustomItemForSelectedDay() {
+      openAddItemModal('activity');
+      const dateInput = document.getElementById("modal-item-date");
+      if (dateInput && selectedDateInCalendar) {
+        dateInput.value = selectedDateInCalendar;
+      }
+    }
+
+    // ================= ITINERARY STAGES RENDER =================
+    function renderItinerary() {
+      const container = document.getElementById("itinerary-stages-container");
+      if (!container) return;
+
+      container.innerHTML = DEFAULT_STAGES.map(stage => {
+        const stageActivities = appState.activities.filter(a => a.stage === stage.id);
+        const stageTotal = stageActivities.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+            <div class="p-4 sm:p-5 bg-slate-50/70 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer" onclick="toggleAccordion('stage-${stage.id}')">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">${stage.icon}</span>
+                <div>
+                  <h3 class="font-bold text-slate-900 text-base">${stage.name}</h3>
+                  <p class="text-xs text-slate-500">${stage.dates} • <span class="font-medium text-slate-700">${stageActivities.length} actividades planificadas</span></p>
+                </div>
+              </div>
+              <div class="flex items-center justify-between sm:justify-end gap-3">
+                <div class="text-right">
+                  <span class="text-[10px] text-slate-400 block uppercase">Subtotal Actividades</span>
+                  <span class="font-bold text-slate-900 text-sm">${stageTotal} €</span>
+                </div>
+                <button onclick="event.stopPropagation(); openAddItemModal('activity', '', '${stage.id}')" class="text-xs bg-white border border-slate-200 text-slate-700 hover:text-rose-600 px-2.5 py-1 rounded-lg font-semibold shadow-2xs">
+                  + Añadir
+                </button>
+                <svg id="arrow-stage-${stage.id}" class="w-5 h-5 text-slate-400 transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+
+            <div id="stage-${stage.id}" class="p-4 sm:p-5 space-y-3">
+              <p class="text-xs text-slate-500 italic pb-1 border-b border-slate-100">${stage.description}</p>
+              
+              <div class="space-y-2">
+                ${stageActivities.length === 0 ? `
+                  <p class="text-xs text-slate-400 italic py-2">No has añadido actividades aún para esta etapa. Haz clic en "+ Añadir".</p>
+                ` : stageActivities.map(act => `
+                  <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start justify-between gap-3 text-xs">
+                    <div class="space-y-0.5">
+                      <div class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                        <span>🎯 ${act.title}</span>
+                        ${act.date ? `<span class="text-[10px] font-normal text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">📅 ${act.date}</span>` : ''}
+                      </div>
+                      ${act.notes ? `<p class="text-slate-600">${act.notes}</p>` : ''}
+                    </div>
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                      <span class="font-bold text-slate-900 text-sm">${act.price} €</span>
+                      <button onclick="deleteActivity('${act.id}')" class="text-slate-400 hover:text-rose-600 transition" title="Eliminar actividad">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                `).join("")}
+              </div>
+
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ================= TRANSPORTS RENDER =================
+    function renderTransports() {
+      const trainsList = document.getElementById("trains-items-list");
+      const carsList = document.getElementById("cars-items-list");
+      const localList = document.getElementById("local-items-list");
+
+      const trainItems = appState.transportItems.filter(t => t.type.toLowerCase().includes("tren") || t.type.toLowerCase().includes("shinkansen") || t.type.toLowerCase().includes("jr"));
+      const carItems = appState.transportItems.filter(t => t.type.toLowerCase().includes("coche") || t.type.toLowerCase().includes("alquiler") || t.type.toLowerCase().includes("gasolina"));
+      const localItems = appState.transportItems.filter(t => !trainItems.includes(t) && !carItems.includes(t));
+
+      const totalTrains = trainItems.reduce((acc, i) => acc + (Number(i.price) || 0), 0);
+      const totalCars = carItems.reduce((acc, i) => acc + (Number(i.price) || 0), 0);
+      const totalLocal = localItems.reduce((acc, i) => acc + (Number(i.price) || 0), 0);
+
+      document.getElementById("total-trains-cost").innerText = `${totalTrains} €`;
+      document.getElementById("total-cars-cost").innerText = `${totalCars} €`;
+      document.getElementById("total-local-cost").innerText = `${totalLocal} €`;
+
+      function renderSublist(el, items) {
+        if (!el) return;
+        if (items.length === 0) {
+          el.innerHTML = `<p class="text-slate-400 italic py-1">Sin elementos registrados todavía.</p>`;
+          return;
+        }
+        el.innerHTML = items.map(item => `
+          <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200/80 flex items-center justify-between text-xs">
+            <div>
+              <span class="font-bold text-slate-800">${item.title}</span>
+              <div class="text-[11px] text-slate-500">${item.date ? `📅 ${item.date} • ` : ''}${item.notes || ''}</div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="font-bold text-slate-900">${item.price} €</span>
+              <button onclick="deleteTransport('${item.id}')" class="text-slate-400 hover:text-rose-600 transition" title="Eliminar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      renderSublist(trainsList, trainItems);
+      renderSublist(carsList, carItems);
+      renderSublist(localList, localItems);
+    }
+
+    // ================= HOTELS RENDER =================
+    function renderHotels() {
+      const container = document.getElementById("hotels-container");
+      if (!container) return;
+
+      container.innerHTML = appState.hotels.map(h => `
+        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 card-hover">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">🏨</span>
+              <h3 class="font-bold text-slate-900 text-base">${h.title}</h3>
+              <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold ${h.price > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                ${h.status || (h.price > 0 ? 'Reservado' : 'Pendiente')}
+              </span>
+            </div>
+            <div class="text-xs text-slate-500 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span>📅 Check-in: <strong>${h.checkIn}</strong></span>
+              <span>➔</span>
+              <span>Check-out: <strong>${h.checkOut}</strong></span>
+              <span>(${h.nights} noches)</span>
+            </div>
+            ${h.notes ? `<p class="text-xs text-slate-600 mt-1">${h.notes}</p>` : ''}
+          </div>
+
+          <div class="flex items-center justify-between md:justify-end gap-4 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100">
+            <div class="text-left md:text-right">
+              <span class="text-[10px] text-slate-400 block uppercase">Coste Alojamiento</span>
+              <span class="text-xl font-black ${h.price > 0 ? 'text-slate-900' : 'text-slate-400'}">${h.price} €</span>
+            </div>
+            <button onclick="editHotelPrice('${h.id}')" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
+              ${h.price > 0 ? 'Modificar' : '+ Poner Precio'}
+            </button>
+            <button onclick="deleteHotel('${h.id}')" class="text-slate-300 hover:text-rose-600 transition" title="Eliminar hotel">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function editHotelPrice(hotelId) {
+      const hotel = appState.hotels.find(h => h.id === hotelId);
+      if (!hotel) return;
+      const newPrice = prompt(`Introduce el precio total en euros para "${hotel.title}":`, hotel.price || 0);
+      if (newPrice !== null && !isNaN(Number(newPrice))) {
+        hotel.price = Number(newPrice);
+        hotel.status = hotel.price > 0 ? "Confirmado / Reservado" : "Pendiente";
+        saveState();
+        renderHotels();
+      }
+    }
+
+    // ================= CALCULATIONS & SIDEBAR SYNC =================
+    function updateAllCalculations() {
+      const flightsTotal = FLIGHTS_DATA.reduce((sum, f) => sum + (Number(f.price) || 0), 0);
+      const hotelsTotal = appState.hotels.reduce((sum, h) => sum + (Number(h.price) || 0), 0);
+      const transportTotal = appState.transportItems.reduce((sum, t) => sum + (Number(t.price) || 0), 0);
+      const activitiesTotal = appState.activities.reduce((sum, a) => sum + (Number(a.price) || 0), 0);
+
+      const grandTotal = flightsTotal + hotelsTotal + transportTotal + activitiesTotal;
+
+      const headFlights = document.getElementById("header-flight-total");
+      const headGrand = document.getElementById("header-grand-total");
+      if (headFlights) headFlights.innerText = `${flightsTotal.toLocaleString("es-ES")} €`;
+      if (headGrand) headGrand.innerText = `${grandTotal.toLocaleString("es-ES")} €`;
+
+      const sideGrand = document.getElementById("sidebar-grand-total");
+      const sideFlights = document.getElementById("sidebar-flights-cost");
+      const sideHotels = document.getElementById("sidebar-hotels-cost");
+      const sideTransport = document.getElementById("sidebar-transport-cost");
+      const sideActivities = document.getElementById("sidebar-activities-cost");
+      const perDay = document.getElementById("sidebar-per-day-cost");
+
+      if (sideGrand) sideGrand.innerText = `${grandTotal.toLocaleString("es-ES")} €`;
+      if (sideFlights) sideFlights.innerText = `${flightsTotal.toLocaleString("es-ES")} €`;
+      if (sideHotels) sideHotels.innerText = `${hotelsTotal.toLocaleString("es-ES")} €`;
+      if (sideTransport) sideTransport.innerText = `${transportTotal.toLocaleString("es-ES")} €`;
+      if (sideActivities) sideActivities.innerText = `${activitiesTotal.toLocaleString("es-ES")} €`;
+
+      if (perDay) {
+        const avg = (grandTotal / 43).toFixed(2);
+        perDay.innerText = `~${avg} € / día`;
+      }
+
+      if (grandTotal > 0) {
+        document.getElementById("bar-flights").style.width = `${(flightsTotal / grandTotal) * 100}%`;
+        document.getElementById("bar-hotels").style.width = `${(hotelsTotal / grandTotal) * 100}%`;
+        document.getElementById("bar-transport").style.width = `${(transportTotal / grandTotal) * 100}%`;
+        document.getElementById("bar-activities").style.width = `${(activitiesTotal / grandTotal) * 100}%`;
+      }
+    }
+
+    // ================= TAB NAVIGATION =================
+    function switchTab(tabKey) {
+      document.querySelectorAll(".tab-view").forEach(view => view.classList.add("hidden"));
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.remove("active", "bg-white/20", "text-white");
+        btn.classList.add("text-slate-300");
+      });
+
+      const targetView = document.getElementById(`view-${tabKey}`);
+      const targetBtn = document.getElementById(`tab-btn-${tabKey}`);
+
+      if (targetView) targetView.classList.remove("hidden");
+      if (targetBtn) {
+        targetBtn.classList.add("active", "bg-white/20", "text-white");
+        targetBtn.classList.remove("text-slate-300");
+      }
+
+      if (tabKey === "calendar") renderCalendar();
+      if (tabKey === "itinerary") renderItinerary();
+      if (tabKey === "transport") renderTransports();
+      if (tabKey === "hotels") renderHotels();
+    }
+
+    // ================= MODAL LOGIC =================
+    function openAddItemModal(category = "activity", subType = "", stage = "taipei") {
+      const modal = document.getElementById("add-modal");
+      if (!modal) return;
+
+      const radios = document.getElementsByName("itemCategory");
+      for (const r of radios) {
+        if (r.value === category) r.checked = true;
+      }
+
+      if (stage) {
+        const stageSelect = document.getElementById("modal-item-stage");
+        if (stageSelect) stageSelect.value = stage;
+      }
+
+      updateModalFormFields(subType);
+      modal.classList.remove("hidden");
+    }
+
+    function closeAddItemModal() {
+      const modal = document.getElementById("add-modal");
+      if (modal) modal.classList.add("hidden");
+      document.getElementById("add-item-form").reset();
+    }
+
+    function updateModalFormFields(subType = "") {
+      const category = document.querySelector('input[name="itemCategory"]:checked').value;
+      const titleLabel = document.getElementById("label-title");
+      const titleInput = document.getElementById("modal-item-title");
+
+      if (category === "activity") {
+        titleLabel.innerText = "Nombre de la Actividad";
+        titleInput.placeholder = "Ej. Visita al Templo Senso-ji en Asakusa";
+      } else if (category === "hotel") {
+        titleLabel.innerText = "Nombre del Hotel / Alojamiento";
+        titleInput.placeholder = "Ej. Hotel Gracery Shinjuku o Ryokan tradicional";
+      } else {
+        titleLabel.innerText = "Descripción del Transporte";
+        titleInput.placeholder = subType ? `Ej. ${subType}: Tramo o Pase` : "Ej. Shinkansen Kioto ➔ Tokio";
+      }
+    }
+
+    function handleAddItemSubmit(e) {
+      e.preventDefault();
+      const category = document.querySelector('input[name="itemCategory"]:checked').value;
+      const title = document.getElementById("modal-item-title").value.trim();
+      const stage = document.getElementById("modal-item-stage").value;
+      const date = document.getElementById("modal-item-date").value;
+      const price = Number(document.getElementById("modal-item-price").value) || 0;
+      const notes = document.getElementById("modal-item-notes").value.trim();
+
+      const newItem = {
+        id: `custom-${Date.now()}`,
+        title,
+        stage,
+        date,
+        price,
+        notes
+      };
+
+      if (category === "activity") {
+        appState.activities.push(newItem);
+        renderItinerary();
+      } else if (category === "hotel") {
+        appState.hotels.push({
+          ...newItem,
+          checkIn: date,
+          checkOut: date,
+          nights: 1,
+          status: "Reservado"
+        });
+        renderHotels();
+      } else if (category === "transport") {
+        appState.transportItems.push({
+          ...newItem,
+          type: "Transporte"
+        });
+        renderTransports();
+      }
+
+      saveState();
+      closeAddItemModal();
+      renderCalendar();
+    }
+
+    function deleteActivity(id) {
+      if (confirm("¿Seguro que deseas eliminar esta actividad?")) {
+        appState.activities = appState.activities.filter(a => a.id !== id);
+        saveState();
+        renderItinerary();
+        renderCalendar();
+      }
+    }
+
+    function deleteTransport(id) {
+      if (confirm("¿Seguro que deseas eliminar este transporte?")) {
+        appState.transportItems = appState.transportItems.filter(t => t.id !== id);
+        saveState();
+        renderTransports();
+        renderCalendar();
+      }
+    }
+
+    function deleteHotel(id) {
+      if (confirm("¿Seguro que deseas eliminar este alojamiento?")) {
+        appState.hotels = appState.hotels.filter(h => h.id !== id);
+        saveState();
+        renderHotels();
+      }
+    }
+
+    function exportDataJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const downloadAnchor = document.createElement("a");
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `itinerario_viaje_japon_2027_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function importDataJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && typeof parsed === "object") {
+            appState = { ...appState, ...parsed };
+            saveState();
+            renderFlights();
+            renderItinerary();
+            renderTransports();
+            renderHotels();
+            renderCalendar();
+            alert("¡Itinerario importado con éxito!");
+          }
+        } catch (err) {
+          alert("Error al leer el archivo JSON: formato no válido.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function convertCurrency(source) {
+      const eurInput = document.getElementById("calc-eur");
+      const jpyInput = document.getElementById("calc-jpy");
+      const twdInput = document.getElementById("calc-twd");
+
+      const RATE_JPY = 165.0;
+      const RATE_TWD = 35.0;
+
+      if (source === "eur") {
+        const val = parseFloat(eurInput.value) || 0;
+        jpyInput.value = Math.round(val * RATE_JPY);
+        twdInput.value = Math.round(val * RATE_TWD);
+      } else if (source === "jpy") {
+        const val = parseFloat(jpyInput.value) || 0;
+        const eur = val / RATE_JPY;
+        eurInput.value = eur.toFixed(2);
+        twdInput.value = Math.round(eur * RATE_TWD);
+      } else if (source === "twd") {
+        const val = parseFloat(twdInput.value) || 0;
+        const eur = val / RATE_TWD;
+        eurInput.value = eur.toFixed(2);
+        jpyInput.value = Math.round(eur * RATE_JPY);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadState();
+      renderFlights();
+      renderCalendar();
+      renderItinerary();
+      renderTransports();
+      renderHotels();
+      updateAllCalculations();
+    });
+  </script>
+</body>
+</html>
